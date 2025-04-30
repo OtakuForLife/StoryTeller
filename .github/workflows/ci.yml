@@ -1,0 +1,36 @@
+name: StoryTeller Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Start containers
+      run: docker-compose up -d
+    
+    - name: Wait for containers to be ready
+      run: sleep 10
+    
+    - name: Run migrations
+      run: docker-compose exec -T backend python manage.py migrate
+    
+    - name: Run backend tests
+      run: docker-compose exec -T backend pytest
+    
+    - name: Run frontend tests
+      run: docker-compose exec -T frontend npm test
+    
+    - name: Stop containers
+      if: always()
+      run: docker-compose down
