@@ -23,9 +23,6 @@ jobs:
         FRONTEND_PORT: 5173
         SECRET_KEY: "django-insecure-*szo#4s48b7mr3$8jj=9$%%*t)p4s!bahdi6i*%2u61ztzfp%n"
     
-    - name: Start containers and run migrations
-      run: docker compose up -d --wait --build
-    
     - name: Run backend tests
       run: docker compose exec -T backend pytest
     
