@@ -17,11 +17,6 @@ jobs:
       uses: hoverkraft-tech/compose-action@v2.0.1
       with:
         compose-file: docker-compose.yml
-      env:
-        BACKEND_PORT: 8000
-        BACKEND_HOST: "localhost"
-        FRONTEND_PORT: 5173
-        SECRET_KEY: "django-insecure-*szo#4s48b7mr3$8jj=9$%%*t)p4s!bahdi6i*%2u61ztzfp%n"
     
     - name: Run backend tests
       run: docker compose exec -T backend pytest
