@@ -16,14 +16,8 @@ jobs:
     - name: Set up Docker Compose
       uses: hoverkraft-tech/compose-action@v2.0.1
     
-    - name: Start containers
-      run: docker compose up -d
-    
-    - name: Wait for containers to be ready
-      run: sleep 10
-    
-    - name: Run migrations
-      run: docker compose exec -T backend python manage.py migrate
+    - name: Start containers and run migrations
+      run: docker compose up -d --wait --build
     
     - name: Run backend tests
       run: docker compose exec -T backend pytest

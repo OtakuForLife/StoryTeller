@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { RootState } from '../store'
-import { fetchStories, createStory, deleteStory } from '../store/slices/storySlice'
+import { fetchStories, createStory, deleteStory } from '../store/slices/dataSlice'
+import { useAppDispatch } from '../hooks/useAppDispatch'
 
 const DashboardPage: React.FC = () => {
-  const dispatch = useDispatch()
-  const { user } = useSelector((state: RootState) => state.auth)
+  const dispatch = useAppDispatch()
   const { stories, isLoading, error } = useSelector((state: RootState) => state.stories)
   
   const [showCreateForm, setShowCreateForm] = useState(false)
@@ -90,7 +90,7 @@ const DashboardPage: React.FC = () => {
         </div>
       )}
       
-      {stories.length === 0 ? (
+      {!Array.isArray(stories) || stories.length === 0 ? (
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <p className="text-gray-600 mb-4">You haven't created any stories yet.</p>
           <button
@@ -130,3 +130,5 @@ const DashboardPage: React.FC = () => {
 }
 
 export default DashboardPage
+
+

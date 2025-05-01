@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-*szo#4s48b7mr3$8jj=9$%%*t)p4s!bahdi6i*%2u61ztzfp%n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # Allow all hosts in development
 
 
 # Application definition
@@ -41,20 +41,36 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
+    'corsheaders',
 
     # Local apps
     'api',
+    'accounts',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+
+# Session settings
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'  # Use 'None' in production with HTTPS
+CSRF_COOKIE_SAMESITE = 'Lax'  # Use 'None' in production with HTTPS
+CSRF_COOKIE_HTTPONLY = True
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
 
 ROOT_URLCONF = 'storyteller_backend.urls'
 
@@ -128,6 +144,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Media files
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -135,8 +155,19 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'storyteller_backend.throttles.IPRequestRateHighThrottle',
+        'storyteller_backend.throttles.UserRequestRateThrottle',
+        'storyteller_backend.throttles.IPRequestRateLowThrottle',
+        'storyteller_backend.throttles.UserRequestRateLowThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'ip-high-rate': '10/min',
+        'ip-low-rate': '5/min',
+        'user-high-rate': '40/min',
+        'user-low-rate': '5/min',
+    },
 }
 
 # Default primary key field type

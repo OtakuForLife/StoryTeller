@@ -1,48 +1,42 @@
-version: '3.8'
 
 services:
-  db:
-    image: postgres:15
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=storyteller
-    ports:
-      - "5432:5432"
-
   backend:
-    build: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
     volumes:
       - ./backend:/app
+    # Port exposed for direct access if needed
     ports:
-      - "8000:8000"
-    depends_on:
-      - db
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=storyteller
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
       - DEBUG=True
-      - SECRET_KEY=dev-secret-key-change-in-production
+      - SECRET_KEY=${SECRET_KEY}
+      - BACKEND_PORT=${BACKEND_PORT}
+      - DJANGO_SETTINGS_MODULE=storyteller_backend.dev_settings
+    networks:
+      - storyteller_network
 
   frontend:
-    build: 
+    build:
       context: ./frontend
       dockerfile: Dockerfile.dev
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    # Port exposed for direct access if needed
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     depends_on:
       - backend
     environment:
       - NODE_ENV=development
+      - VITE_BACKEND_HOST=${BACKEND_HOST}
+      - VITE_BACKEND_PORT=${BACKEND_PORT}
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - storyteller_network
 
-volumes:
-  postgres_data:
+networks:
+  storyteller_network:

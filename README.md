@@ -77,33 +77,6 @@ You can run all tests (both backend and frontend) at once using the provided scr
   docker-compose exec frontend npm run test:watch
   ```
 
-## Production Deployment
-
-1. Copy the example environment file and update it with your settings:
-   ```
-   cp .env.example .env
-   ```
-
-2. Update the domain name in `nginx/nginx.conf` and `init-letsencrypt.sh`
-
-3. Initialize SSL certificates:
-   ```
-   chmod +x init-letsencrypt.sh
-   ./init-letsencrypt.sh
-   ```
-
-4. Start the production environment:
-   ```
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
-
-5. Initialize the database:
-   ```
-   docker-compose -f docker-compose.prod.yml exec backend python manage.py migrate
-   docker-compose -f docker-compose.prod.yml exec backend python manage.py createsuperuser
-   docker-compose -f docker-compose.prod.yml exec backend python manage.py collectstatic --no-input
-   ```
-
 ## Features
 - User authentication and authorization
 - Create and manage stories

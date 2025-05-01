@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
-import { fetchStory, updateStory } from '../store/slices/storySlice'
+import { fetchStory, updateStory } from '../store/slices/dataSlice'
 
 const StoryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()

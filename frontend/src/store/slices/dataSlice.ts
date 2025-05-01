@@ -1,48 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import axios from 'axios'
+import api from '../../utils/api'
+import Story from '../../models/Story'
 
-interface Character {
-  id: number
-  name: string
-  description: string
-  story: number
-  created_at: string
-  updated_at: string
-}
-
-interface Chapter {
-  id: number
-  title: string
-  content: string
-  story: number
-  order: number
-  created_at: string
-  updated_at: string
-}
-
-export interface Story {
-  id: number
-  title: string
-  description: string
-  author: {
-    id: number
-    username: string
-    email: string
-  }
-  characters: Character[]
-  chapters: Chapter[]
-  created_at: string
-  updated_at: string
-}
-
-interface StoryState {
+interface DataState {
   stories: Story[]
   currentStory: Story | null
   isLoading: boolean
   error: string | null
 }
 
-const initialState: StoryState = {
+const initialState: DataState = {
   stories: [],
   currentStory: null,
   isLoading: false,
@@ -57,7 +24,7 @@ export const fetchStories = createAsyncThunk('stories/fetchStories', async (_, {
         Authorization: `Token ${state.auth.token}`,
       },
     }
-    const response = await axios.get('/api/stories/', config)
+    const response = await api.get('/api/stories/', config)
     return response.data
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.detail || 'Failed to fetch stories')
@@ -74,7 +41,7 @@ export const fetchStory = createAsyncThunk(
           Authorization: `Token ${state.auth.token}`,
         },
       }
-      const response = await axios.get(`/api/stories/${id}/`, config)
+      const response = await api.get(`/api/stories/${id}/`, config)
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.detail || 'Failed to fetch story')
@@ -92,7 +59,7 @@ export const createStory = createAsyncThunk(
           Authorization: `Token ${state.auth.token}`,
         },
       }
-      const response = await axios.post('/api/stories/', storyData, config)
+      const response = await api.post('/api/stories/', storyData, config)
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.detail || 'Failed to create story')
@@ -113,7 +80,7 @@ export const updateStory = createAsyncThunk(
           Authorization: `Token ${state.auth.token}`,
         },
       }
-      const response = await axios.put(`/api/stories/${id}/`, storyData, config)
+      const response = await api.put(`/api/stories/${id}/`, storyData, config)
       return response.data
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.detail || 'Failed to update story')
@@ -131,7 +98,7 @@ export const deleteStory = createAsyncThunk(
           Authorization: `Token ${state.auth.token}`,
         },
       }
-      await axios.delete(`/api/stories/${id}/`, config)
+      await api.delete(`/api/stories/${id}/`, config)
       return id
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.detail || 'Failed to delete story')
