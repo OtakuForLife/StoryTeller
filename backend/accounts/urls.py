@@ -1,9 +1,11 @@
-from django.urls import path, include
-from .views import RegisterView, LoginView, UserView, LogoutView
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('register/', RegisterView.as_view(), name='register'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('user/', UserView.as_view(), name='user'),
+    path('register/', views.RegisterView.as_view(), name='register'),
+    path('login/', views.LoginView.as_view(), name='login'),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('user/', views.UserView.as_view(), name='user'),
+    path('csrf/', views.get_csrf_token, name='csrf'),
 ]
+

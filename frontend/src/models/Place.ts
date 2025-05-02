@@ -1,6 +1,10 @@
 
+import User from './User'
+
 export default interface Place {
-  id: number
+  id: string // UUID
+  author: User
   name: string
-  adjectives: string[]
+  parent?: Place
+  adjectives: string
 }

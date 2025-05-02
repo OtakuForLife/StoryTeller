@@ -1,53 +1,80 @@
 from rest_framework import serializers
 from .models import (
-    Project, Character, CharacterArc, Place, Items,
-    Story, Scene, Idea, Chapter
+    Character, CharacterArc, Place, Item,
+    Story, Scene, Idea, Chapter, Race, CharacterTrait,
+    CharacterRelationship, Gender, CharacterArcType, RelationshipType
 )
 from accounts.serializers import UserSerializer
 
-class ProjectSerializer(serializers.ModelSerializer):
+class RaceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Race
+        fields = ['id', 'name', 'description']
+
+class CharacterTraitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CharacterTrait
+        fields = ['id', 'name', 'description']
+
+class CharacterArcSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
 
     class Meta:
-        model = Project
-        fields = ['id', 'name', 'author']
-
-class CharacterArcSerializer(serializers.ModelSerializer):
-    class Meta:
         model = CharacterArc
-        fields = ['id', 'project', 'character', 'description']
+        fields = [
+            'id', 'character', 'author', 'description',
+            'arc_type', 'start_trait', 'end_trait', 'change_trigger'
+        ]
+
+class CharacterRelationshipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CharacterRelationship
+        fields = ['id', 'from_character', 'to_character', 'types', 'description']
 
 class CharacterSerializer(serializers.ModelSerializer):
     arcs = CharacterArcSerializer(many=True, read_only=True)
+    race = RaceSerializer(read_only=True)
+    author = UserSerializer(read_only=True)
+    relationships_from = CharacterRelationshipSerializer(many=True, read_only=True)
+    relationships_to = CharacterRelationshipSerializer(many=True, read_only=True)
 
     class Meta:
         model = Character
-        fields = ['id', 'project', 'name', 'surname', 'nickname', 'arcs']
+        fields = [
+            'id', 'author', 'name', 'surname', 'nickname',
+            'gender', 'race', 'arcs', 'relationships_from', 'relationships_to'
+        ]
 
 class PlaceSerializer(serializers.ModelSerializer):
     places = serializers.SerializerMethodField()
+    author = UserSerializer(read_only=True)
 
     class Meta:
         model = Place
-        fields = ['id', 'project', 'name', 'parent', 'places', 'adjectives']
+        fields = ['id', 'author', 'name', 'parent', 'places', 'adjectives']
 
     def get_places(self, obj):
         places = obj.places.all()
         return PlaceSerializer(places, many=True, context=self.context).data if places else []
 
-class ItemsSerializer(serializers.ModelSerializer):
+class ItemSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+    owners = CharacterSerializer(many=True, read_only=True)
+
     class Meta:
-        model = Items
-        fields = ['id', 'project', 'name']
+        model = Item
+        fields = ['id', 'author', 'name', 'origin', 'owners']
 
 class SceneSerializer(serializers.ModelSerializer):
     characters = CharacterSerializer(many=True, read_only=True)
-    items = ItemsSerializer(many=True, read_only=True)
+    items = ItemSerializer(many=True, read_only=True)
+    author = UserSerializer(read_only=True)
+    place = PlaceSerializer(read_only=True)
 
     class Meta:
         model = Scene
         fields = [
-            'id', 'project', 'short_description', 'characters', 'place',
+            'id', 'author', 'short_description', 'characters', 'place',
             'items', 'external_conflict', 'interpersonal_conflict',
             'internal_conflict', 'time_order'
         ]
@@ -57,7 +84,7 @@ class IdeaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Idea
-        fields = ['id', 'author', 'project', 'content', 'type']
+        fields = ['id', 'author', 'content', 'type', 'tags', 'linked_elements']
 
 class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -66,10 +93,11 @@ class ChapterSerializer(serializers.ModelSerializer):
 
 class StorySerializer(serializers.ModelSerializer):
     chapters = ChapterSerializer(many=True, read_only=True)
+    author = UserSerializer(read_only=True)
 
     class Meta:
         model = Story
         fields = [
-            'id', 'project', 'title', 'promise', 'plot', 'emotional_matter',
+            'id', 'author', 'title', 'promise', 'plot', 'emotional_matter',
             'universal_truth', 'logline', 'chapters'
         ]

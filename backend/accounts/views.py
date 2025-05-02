@@ -7,6 +7,18 @@ from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .serializers import UserSerializer
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.middleware.csrf import get_token
+
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    """
+    This view ensures a CSRF cookie is set and returns the token
+    """
+    # Explicitly get the token to ensure it's set
+    token = get_token(request)
+    return JsonResponse({"csrfToken": token})
 
 
 class RegisterView(APIView):

@@ -2,64 +2,12 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from api.models import Project, Character, CharacterArc, Story, Chapter
+from api.models import (
+    Character, CharacterArc, Story, Chapter, Race, CharacterTrait,
+    CharacterRelationship, Gender, CharacterArcType, RelationshipType
+)
 
-class ProjectViewSetTest(APITestCase):
-    def setUp(self):
-        # Create a user
-        self.user = User.objects.create_user(username='testuser', password='12345')
 
-        # Create a client and force authentication
-        self.client = APIClient()
-        self.client.force_authenticate(user=self.user)
-
-        # Create a project
-        self.project = Project.objects.create(
-            name='Test Project',
-            author=self.user
-        )
-
-        # URL for projects list
-        self.projects_url = reverse('project-list')
-
-    def test_get_projects_list(self):
-        response = self.client.get(self.projects_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-
-    def test_create_project(self):
-        data = {
-            'name': 'New Project'
-        }
-        response = self.client.post(self.projects_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Project.objects.count(), 2)
-        # Get the newly created project by filtering instead of by ID
-        new_project = Project.objects.filter(name='New Project').first()
-        self.assertIsNotNone(new_project)
-        self.assertEqual(new_project.name, 'New Project')
-
-    def test_get_project_detail(self):
-        url = reverse('project-detail', args=[self.project.id])
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['name'], 'Test Project')
-
-    def test_update_project(self):
-        url = reverse('project-detail', args=[self.project.id])
-        data = {
-            'name': 'Updated Project'
-        }
-        response = self.client.put(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.project.refresh_from_db()
-        self.assertEqual(self.project.name, 'Updated Project')
-
-    def test_delete_project(self):
-        url = reverse('project-detail', args=[self.project.id])
-        response = self.client.delete(url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Project.objects.count(), 0)
 
 class CharacterViewSetTest(APITestCase):
     def setUp(self):
@@ -70,10 +18,10 @@ class CharacterViewSetTest(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        # Create a project
-        self.project = Project.objects.create(
-            name='Test Project',
-            author=self.user
+        # Create a race
+        self.race = Race.objects.create(
+            name='Test Race',
+            description='Test race description'
         )
 
         # Create a character
@@ -81,7 +29,9 @@ class CharacterViewSetTest(APITestCase):
             name='Test Character',
             surname='Test Surname',
             nickname='Test Nickname',
-            project=self.project
+            author=self.user,
+            gender=Gender.MALE,
+            race=self.race
         )
 
         # URL for characters list
@@ -97,7 +47,8 @@ class CharacterViewSetTest(APITestCase):
             'name': 'New Character',
             'surname': 'New Surname',
             'nickname': 'New Nickname',
-            'project': str(self.project.id)
+            'gender': Gender.FEMALE,
+            'race': str(self.race.id)
         }
         response = self.client.post(self.characters_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -118,23 +69,21 @@ class CharacterArcViewSetTest(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        # Create a project
-        self.project = Project.objects.create(
-            name='Test Project',
-            author=self.user
-        )
-
         # Create a character
         self.character = Character.objects.create(
             name='Test Character',
-            project=self.project
+            author=self.user
         )
 
         # Create a character arc
         self.arc = CharacterArc.objects.create(
-            project=self.project,
             character=self.character,
-            description='Test character arc description'
+            author=self.user,
+            description='Test character arc description',
+            arc_type=CharacterArcType.POSITIVE,
+            start_trait='Shy',
+            end_trait='Confident',
+            change_trigger='Overcame fear'
         )
 
         # URL for character arcs list
@@ -147,9 +96,12 @@ class CharacterArcViewSetTest(APITestCase):
 
     def test_create_arc(self):
         data = {
-            'project': str(self.project.id),
             'character': str(self.character.id),
-            'description': 'New character arc description'
+            'description': 'New character arc description',
+            'arc_type': CharacterArcType.NEGATIVE,
+            'start_trait': 'Confident',
+            'end_trait': 'Fearful',
+            'change_trigger': 'Traumatic event'
         }
         response = self.client.post(self.arcs_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -164,16 +116,10 @@ class StoryViewSetTest(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        # Create a project
-        self.project = Project.objects.create(
-            name='Test Project',
-            author=self.user
-        )
-
         # Create a story
         self.story = Story.objects.create(
             title='Test Story',
-            project=self.project,
+            author=self.user,
             promise='Test promise',
             plot='Test plot',
             emotional_matter='Test emotional matter',
@@ -192,7 +138,6 @@ class StoryViewSetTest(APITestCase):
     def test_create_story(self):
         data = {
             'title': 'New Story',
-            'project': str(self.project.id),
             'promise': 'New promise',
             'plot': 'New plot',
             'emotional_matter': 'New emotional matter',
@@ -216,16 +161,10 @@ class ChapterViewSetTest(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-        # Create a project
-        self.project = Project.objects.create(
-            name='Test Project',
-            author=self.user
-        )
-
         # Create a story
         self.story = Story.objects.create(
             title='Test Story',
-            project=self.project
+            author=self.user
         )
 
         # Create a chapter
