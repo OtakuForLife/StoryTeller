@@ -1,36 +1,38 @@
 import { Link } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+
 import { RootState } from '../store'
-import { logout } from '../store/slices/authSlice'
+import { AuthState, logout } from '../store/slices/authSlice'
+import { useAppDispatch } from '@/hooks/useAppDispatch'
 
 const Navbar: React.FC = () => {
-  const dispatch = useDispatch()
-  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth)
+  const dispatch = useAppDispatch()
+  const { isAuthenticated, user }: AuthState = useSelector((state: RootState) => state.auth)
 
   const handleLogout = () => {
     dispatch(logout())
   }
 
   return (
-    <nav className="bg-blue-600 text-white shadow-md">
+    <nav className="bg-skin-primary text-skin-primary shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">StoryTeller</Link>
         <div className="flex space-x-4">
           {isAuthenticated ? (
             <>
               <span className="py-2">Welcome, {user?.username}</span>
-              <Link to="/dashboard" className="py-2 hover:text-blue-200">Dashboard</Link>
-              <button 
+              <Link to="/workspace" className="py-2 hover:text-skin-primary-hover">Workspace</Link>
+              <button
                 onClick={handleLogout}
-                className="py-2 hover:text-blue-200"
+                className="py-2 hover:text-skin-primary-hover"
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="py-2 hover:text-blue-200">Login</Link>
-              <Link to="/register" className="py-2 hover:text-blue-200">Register</Link>
+              <Link to="/login" className="py-2 hover:text-skin-primary-hover">Login</Link>
+              <Link to="/register" className="py-2 hover:text-skin-primary-hover">Register</Link>
             </>
           )}
         </div>

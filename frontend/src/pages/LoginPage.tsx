@@ -18,7 +18,7 @@ const LoginPage: React.FC = () => {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" />
+    return <Navigate to="/workspace" />
   }
 
   return (
@@ -78,3 +78,4 @@ const LoginPage: React.FC = () => {
 }
 
 export default LoginPage
+

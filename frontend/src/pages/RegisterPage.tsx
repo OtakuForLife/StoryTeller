@@ -44,7 +44,7 @@ const RegisterPage: React.FC = () => {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" />
+    return <Navigate to="/workspace" />
   }
 
   if (success) {

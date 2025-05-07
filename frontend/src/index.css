@@ -1,13 +1,41 @@
 @import "tailwindcss";
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  :root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    --color-background-primary: rgb(200, 200, 200);
+    --color-background-secondary: rgb(166, 166, 166);
+    --color-background-primary-hover: rgb(150, 155, 164);
+    --color-text-primary: rgb(0, 0, 0);
+    --color-text-primary-hover: rgb(100, 100, 100);
+
+    [data-theme="dark"]{
+      --color-background-primary: rgb(32, 39, 49);
+      --color-background-primary-hover: rgb(51, 56, 66);
+      --color-background-secondary: rgb(19, 25, 34);
+      --color-text-primary: rgb(140, 148, 154);
+      --color-text-primary-hover: rgb(160, 168, 174);
+    }
+  }
+  
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
+@layer utilities {
+  .bg-skin-primary {
+    background-color: var(--color-background-primary);
+  }
+  .bg-skin-secondary {
+    background-color: var(--color-background-secondary);
+  }
+  .bg-skin-primary-hover {
+    background-color: var(--color-background-primary-hover);
+  }
+  .text-skin-primary {
+    color: var(--color-text-primary);
+  }
+  .text-skin-primary-hover {
+    color: var(--color-text-primary-hover);
+  }
 }
