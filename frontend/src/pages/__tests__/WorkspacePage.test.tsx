@@ -3,50 +3,50 @@ import { Provider } from 'react-redux'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { describe, expect, test, vi } from 'vitest'
 import { configureStore } from '@reduxjs/toolkit'
-import WorkspacePage from '../WorkspacePage'
-import authReducer from '../../store/slices/authSlice'
-import storyReducer from '../../store/slices/storySlice'
-import characterReducer from '../../store/slices/characterSlice'
-import placeReducer from '../../store/slices/placeSlice'
-import itemReducer from '../../store/slices/itemSlice'
-import ideaReducer from '../../store/slices/ideaSlice'
-import themeReducer from '../../store/slices/themeSlice'
+import WorkspacePage from '@/pages/WorkspacePage'
+import authReducer from '@/store/slices/authSlice'
+import storyReducer from '@/store/slices/storySlice'
+import characterReducer from '@/store/slices/characterSlice'
+import placeReducer from '@/store/slices/placeSlice'
+import itemReducer from '@/store/slices/itemSlice'
+import ideaReducer from '@/store/slices/ideaSlice'
+import themeReducer from '@/store/slices/themeSlice'
 
 // Mock the async thunks
-vi.mock('../../store/slices/storySlice', async () => {
-  const actual = await vi.importActual('../../store/slices/storySlice')
+vi.mock('@/store/slices/storySlice', async () => {
+  const actual = await vi.importActual('@/store/slices/storySlice')
   return {
     ...actual,
     fetchStories: vi.fn().mockReturnValue({ type: 'story/fetchStories' })
   }
 })
 
-vi.mock('../../store/slices/characterSlice', async () => {
-  const actual = await vi.importActual('../../store/slices/characterSlice')
+vi.mock('@/store/slices/characterSlice', async () => {
+  const actual = await vi.importActual('@/store/slices/characterSlice')
   return {
     ...actual,
     fetchCharacters: vi.fn().mockReturnValue({ type: 'character/fetchCharacters' })
   }
 })
 
-vi.mock('../../store/slices/placeSlice', async () => {
-  const actual = await vi.importActual('../../store/slices/placeSlice')
+vi.mock('@/store/slices/placeSlice', async () => {
+  const actual = await vi.importActual('@/store/slices/placeSlice')
   return {
     ...actual,
     fetchPlaces: vi.fn().mockReturnValue({ type: 'place/fetchPlaces' })
   }
 })
 
-vi.mock('../../store/slices/itemSlice', async () => {
-  const actual = await vi.importActual('../../store/slices/itemSlice')
+vi.mock('@/store/slices/itemSlice', async () => {
+  const actual = await vi.importActual('@/store/slices/itemSlice')
   return {
     ...actual,
     fetchItems: vi.fn().mockReturnValue({ type: 'item/fetchItems' })
   }
 })
 
-vi.mock('../../store/slices/ideaSlice', async () => {
-  const actual = await vi.importActual('../../store/slices/ideaSlice')
+vi.mock('@/store/slices/ideaSlice', async () => {
+  const actual = await vi.importActual('@/store/slices/ideaSlice')
   return {
     ...actual,
     fetchIdeas: vi.fn().mockReturnValue({ type: 'idea/fetchIdeas' })
