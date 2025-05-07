@@ -9,11 +9,13 @@ Story
 - emotional_matter: Text # Why does this matter to the protagonist
 - universal_truth: Text # what universal truth does this reveal about human nature
 - logline: Text # When [inciting incident] happens to [protagonis]. they must [objective], or else [stakes] - but [obstacle] stands in their way
+- events: Event[]
 - author: User
 
 Chapter
 - id: UUID
 - story: Story
+- includedScenes: Scene[]
 - order: Integer
 - title: Text
 - content: Text
@@ -25,9 +27,20 @@ Scene
 - characters: Character[]
 - place: Place
 - items: Items[]
+- shownEvents: Event[]
+- toldEvents: Event[]
 - external_conflict: Text
 - interpersonal_conflict: Text
 - internal_conflict: Text
+- time_order: Integer
+
+Event
+- id: UUID
+- author: User
+- description: Text
+- characters: Character[]
+- place: Place
+- items: Items[]
 - time_order: Integer
 
 Gender

@@ -92,6 +92,18 @@ class Item(models.Model):
     class Meta:
         verbose_name_plural = "Items"
 
+class Event(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
+    description = models.TextField()
+    characters = models.ManyToManyField(Character, related_name='events', blank=True)
+    place = models.ForeignKey(Place, on_delete=models.SET_NULL, null=True, blank=True, related_name='events')
+    items = models.ManyToManyField(Item, related_name='events', blank=True)
+    time_order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.description[:50]
+
 class Story(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='stories')
@@ -101,6 +113,7 @@ class Story(models.Model):
     emotional_matter = models.TextField(blank=True)
     universal_truth = models.TextField(blank=True)
     logline = models.TextField(blank=True)
+    events = models.ManyToManyField(Event, related_name='stories', blank=True)
 
     def __str__(self):
         return self.title
@@ -115,6 +128,8 @@ class Scene(models.Model):
     characters = models.ManyToManyField(Character, related_name='scenes', blank=True)
     place = models.ForeignKey(Place, on_delete=models.SET_NULL, null=True, blank=True, related_name='scenes')
     items = models.ManyToManyField(Item, related_name='scenes', blank=True)
+    shown_events = models.ManyToManyField(Event, related_name='shown_in_scenes', blank=True)
+    told_events = models.ManyToManyField(Event, related_name='told_in_scenes', blank=True)
     external_conflict = models.TextField(blank=True)
     interpersonal_conflict = models.TextField(blank=True)
     internal_conflict = models.TextField(blank=True)
@@ -148,6 +163,7 @@ class Idea(models.Model):
 class Chapter(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='chapters')
+    included_scenes = models.ManyToManyField(Scene, related_name='chapters', blank=True)
     order = models.IntegerField(default=0)
     title = models.TextField()
     content = models.TextField(blank=True)

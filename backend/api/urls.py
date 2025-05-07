@@ -4,7 +4,7 @@ from .views import (
     UserViewSet, CharacterViewSet, CharacterArcViewSet,
     PlaceViewSet, ItemViewSet, StoryViewSet, SceneViewSet,
     IdeaViewSet, ChapterViewSet, RaceViewSet, CharacterTraitViewSet,
-    CharacterRelationshipViewSet
+    CharacterRelationshipViewSet, EventViewSet
 )
 
 router = DefaultRouter()
@@ -14,6 +14,7 @@ router.register(r'character-arcs', CharacterArcViewSet, basename='character-arc'
 router.register(r'character-relationships', CharacterRelationshipViewSet, basename='character-relationship')
 router.register(r'places', PlaceViewSet, basename='place')
 router.register(r'items', ItemViewSet, basename='item')
+router.register(r'events', EventViewSet, basename='event')
 router.register(r'stories', StoryViewSet, basename='story')
 router.register(r'scenes', SceneViewSet, basename='scene')
 router.register(r'ideas', IdeaViewSet, basename='idea')

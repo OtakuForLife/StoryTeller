@@ -4,13 +4,13 @@ from django.contrib.auth.models import User
 from .models import (
     Character, CharacterArc, Place, Item,
     Story, Scene, Idea, Chapter, Race, CharacterTrait,
-    CharacterRelationship
+    CharacterRelationship, Event
 )
 from .serializers import (
     UserSerializer, CharacterSerializer, CharacterArcSerializer,
     PlaceSerializer, ItemSerializer, StorySerializer, SceneSerializer,
     IdeaSerializer, ChapterSerializer, RaceSerializer, CharacterTraitSerializer,
-    CharacterRelationshipSerializer
+    CharacterRelationshipSerializer, EventSerializer
 )
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -56,6 +56,16 @@ class ItemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Item.objects.filter(author=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+class EventViewSet(viewsets.ModelViewSet):
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Event.objects.filter(author=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
