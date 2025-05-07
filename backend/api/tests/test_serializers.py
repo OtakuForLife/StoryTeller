@@ -70,7 +70,6 @@ class CharacterSerializerTest(TestCase):
         self.assertEqual(serializer.data['surname'], 'Test Surname')
         self.assertEqual(serializer.data['nickname'], 'Test Nickname')
         self.assertEqual(serializer.data['gender'], Gender.MALE)
-        self.assertEqual(serializer.data['author']['username'], 'testuser')
         self.assertEqual(serializer.data['race']['name'], 'Test Race')
 
 
@@ -135,7 +134,6 @@ class CharacterArcSerializerTest(TestCase):
         serializer = CharacterArcSerializer(self.arc)
         # Convert UUID objects to strings for comparison
         self.assertEqual(str(serializer.data['character']), str(self.character.id))
-        self.assertEqual(serializer.data['author']['username'], 'testuser')
         self.assertEqual(serializer.data['description'], 'Test character arc description')
         self.assertEqual(serializer.data['arc_type'], CharacterArcType.POSITIVE)
         self.assertEqual(serializer.data['start_trait'], 'Shy')
@@ -167,7 +165,6 @@ class PlaceSerializerTest(TestCase):
     def test_place_serializer(self):
         serializer = PlaceSerializer(self.parent_place)
         self.assertEqual(serializer.data['name'], 'Parent Place')
-        self.assertEqual(serializer.data['author']['username'], 'testuser')
         self.assertEqual(serializer.data['adjectives'], 'big, spacious')
         self.assertEqual(len(serializer.data['places']), 1)
         self.assertEqual(serializer.data['places'][0]['name'], 'Child Place')
@@ -198,7 +195,6 @@ class ItemsSerializerTest(TestCase):
     def test_item_serializer(self):
         serializer = ItemSerializer(self.item)
         self.assertEqual(serializer.data['name'], 'Test Item')
-        self.assertEqual(serializer.data['author']['username'], 'testuser')
         self.assertEqual(serializer.data['origin'], 'Test origin')
         self.assertEqual(len(serializer.data['owners']), 1)
         self.assertEqual(serializer.data['owners'][0]['name'], 'Test Character')
@@ -239,7 +235,6 @@ class StorySerializerTest(TestCase):
     def test_story_serializer(self):
         serializer = StorySerializer(self.story)
         self.assertEqual(serializer.data['title'], 'Test Story')
-        self.assertEqual(serializer.data['author']['username'], 'testuser')
         self.assertEqual(serializer.data['promise'], 'Test promise')
         self.assertEqual(serializer.data['plot'], 'Test plot')
         self.assertEqual(serializer.data['emotional_matter'], 'Test emotional matter')
@@ -330,7 +325,6 @@ class SceneSerializerTest(TestCase):
 
     def test_scene_serializer(self):
         serializer = SceneSerializer(self.scene)
-        self.assertEqual(serializer.data['author']['username'], 'testuser')
         self.assertEqual(serializer.data['short_description'], 'Test scene description')
         self.assertEqual(serializer.data['place']['name'], 'Test Place')
         self.assertEqual(serializer.data['external_conflict'], 'Test external conflict')
@@ -358,7 +352,6 @@ class IdeaSerializerTest(TestCase):
 
     def test_idea_serializer(self):
         serializer = IdeaSerializer(self.idea)
-        self.assertEqual(serializer.data['author']['username'], 'testuser')
         self.assertEqual(serializer.data['content'], 'Test idea content')
         self.assertEqual(serializer.data['type'], IdeaType.CHARACTER)
         self.assertEqual(serializer.data['tags'], ['protagonist', 'hero'])

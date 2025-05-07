@@ -50,7 +50,7 @@ describe('Navbar Component', () => {
     )
 
     expect(screen.getByText('Welcome, testuser')).toBeInTheDocument()
-    expect(screen.getByText('Dashboard')).toBeInTheDocument()
+    expect(screen.getByText('Workspace')).toBeInTheDocument()
     expect(screen.getByText('Logout')).toBeInTheDocument()
     expect(screen.queryByText('Login')).not.toBeInTheDocument()
   })
