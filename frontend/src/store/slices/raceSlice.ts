@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import api from '../../lib/api'
-import { Race } from '../../models'
+import api from '@/lib/api'
+import { Race } from '@/models'
 
 interface RaceState {
   races: Record<string, Race>

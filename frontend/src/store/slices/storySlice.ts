@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import api from '../../lib/api'
-import { Story } from '../../models'
+import api from '@/lib/api'
+import { Story } from '@/models'
 
 interface DataState {
   stories: Record<string, Story>

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import api from '../../lib/api'
-import { Character } from '../../models'
+import api from '@/lib/api'
+import { Character } from '@/models'
 
 interface CharacterState {
   characters: Record<string, Character>

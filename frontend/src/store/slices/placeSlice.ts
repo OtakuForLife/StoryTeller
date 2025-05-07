@@ -1,7 +1,7 @@
 
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import api from '../../lib/api'
-import { Place } from '../../models'
+import api from '@/lib/api'
+import { Place } from '@/models'
 
 interface PlaceState {
   places: Record<string, Place>

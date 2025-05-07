@@ -1,7 +1,7 @@
 
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import api from '../../lib/api'
-import { Idea } from '../../models'
+import api from '@/lib/api'
+import { Idea } from '@/models'
 
 interface IdeaState {
   ideas: Record<string, Idea>
